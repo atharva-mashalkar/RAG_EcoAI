@@ -1,0 +1,3 @@
+SESSION_DURATION = 30 # 30 minutes
+PDF_FOLDER_PATH = 'documents'
+PERSISTANT_DIRECTORY = "chroma_db"
