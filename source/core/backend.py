@@ -50,6 +50,10 @@ memory = ConversationSummaryBufferMemory(
 
 embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-large-en-v1.5")
 
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
 
 vectorstore = Chroma(
     persist_directory=PERSISTANT_DIRECTORY,
