@@ -381,7 +381,7 @@ def retrieve_documents(input_data):
     
     retrieved_docs = []
     for rq, filter_criteria in retrieval_queries:
-        print("filter criteria:", filter_criteria)
+        # print("filter criteria:", filter_criteria)
         params = {"query": rq}
         if filter_criteria:
             params["filter"] = filter_criteria
@@ -467,7 +467,7 @@ def get_conversation_chain():
         RunnablePassthrough.assign(formatted_input=format_context)
         | (lambda x: {"context": x["formatted_input"]["context"], 
                       "question": x["formatted_input"]["question"]})
-        | debug_print_prompt  # Print the final prompt
+        # | debug_print_prompt  # Print the final prompt
         | prompt_template
         | structured_llm
     )
@@ -483,7 +483,7 @@ def process_query(query):
     
     # Step 2: Retrieve relevant documents using the rewritten query
     retrieved_docs = retrieve_documents({"query": rewritten_query})
-    print("Docs:\n", retrieved_docs)
+    # print("Docs:\n", retrieved_docs)
     # Step 3: Get the conversation chain with memory
     conversation_chain = get_conversation_chain()
     
