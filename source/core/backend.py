@@ -13,30 +13,36 @@ from source.utils import *
 
 
 def process_query(query):
-    # Step 1: Rewrite the query if it's a follow-up question
-    rewritten_query = rewrite_query_with_history(query, memory)
-    print("Rewritten query:\n", rewritten_query)
+    try:
+        # Step 1: Rewrite the query if it's a follow-up question
+        rewritten_query = rewrite_query_with_history(query, memory)
+        print("Rewritten query:\n", rewritten_query)
+        
+        # Step 2: Retrieve relevant documents using the rewritten query
+        retrieved_docs = retrieve_documents({"query": rewritten_query})
+
+        # Step 3: If no docuemnts are retrieved ⁠⁠suggest a meeting with https://calendly.com/gregory-gueneau
+        if not retrieved_docs:
+            return "No relevant documents found. Please consider scheduling a meeting with https://calendly.com/gregory-gueneau for further assistance." , []
+
+        # Step 4: Get the conversation chain with memory
+        conversation_chain = get_conversation_chain()
+        
+        # Step 5: Process through the chain
     
-    # Step 2: Retrieve relevant documents using the rewritten query
-    retrieved_docs = retrieve_documents({"query": rewritten_query})
+        result = conversation_chain.invoke(retrieved_docs)
 
-    # Step 3: If no docuemnts are retrieved ⁠⁠suggest a meeting with https://calendly.com/gregory-gueneau
-    if not retrieved_docs:
-        return "No relevant documents found. Please consider scheduling a meeting with https://calendly.com/gregory-gueneau for further assistance." , []
-
-    # Step 4: Get the conversation chain with memory
-    conversation_chain = get_conversation_chain()
+        # Step 6: Save the original interaction to memory
+        memory.save_context(
+            {"input": query},  # Save original query to maintain natural conversation flow
+            {"output": result.answer}
+        )
+        
+        return result.answer, result.citations
     
-    # Step 5: Process through the chain
-    result = conversation_chain.invoke(retrieved_docs)
+    except Exception as e:
+        return "Internal Server Error. Please consider scheduling a meeting with https://calendly.com/gregory-gueneau for further assistance." , [f"Error:{e}"]
 
-    # Step 6: Save the original interaction to memory
-    memory.save_context(
-        {"input": query},  # Save original query to maintain natural conversation flow
-        {"output": result.answer}
-    )
-
-    return result.answer, result.citations
 
 # ---------------------------
 # Main Execution Functions
