@@ -19,6 +19,17 @@ class CitedAnswer(BaseModel):
         description="The citations from the sources (file path and page number) which justify the answer.",
     )
 
+query_router_schema = [
+    ResponseSchema(
+        name="query_database",
+        description="Boolean flag indicating whether the database needs to be queried (true) or not (false). Set to true only when the question specifically requires information from the entrepreneurial ecosystems database."
+    ),
+
+    ResponseSchema(
+        name="response",
+        description="The direct response to provide to the user for greetings or off-topic questions. Only valid when query_database is false."
+    )
+]
 
 country_specific_response_schema = [
         ResponseSchema(name="query", description="Refined query focused on the given country.")

@@ -17,6 +17,16 @@ def get_latest_year_for_country(country):
         latest_year = None
     return str(latest_year) if latest_year else None
 
+def route_query(query):
+
+    response_schemas = query_router_schema
+    output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
+    format_instructions = output_parser.get_format_instructions()
+    prompt = query_router_prompt.format(format_instructions=format_instructions, user_input=query)
+    output = llm.invoke(prompt).content
+    parsed = output_parser.parse(output)
+    return parsed["query_database"], parsed["response"]
+
 def generate_country_specific_query(original_query, country):
 
     response_schemas = country_specific_response_schema

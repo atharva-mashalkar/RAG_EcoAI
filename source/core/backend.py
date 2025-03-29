@@ -14,6 +14,12 @@ from source.utils import *
 
 def process_query(query):
     try:
+
+        # Route the Query based on its a general greeting or needs to be answered using the databsse
+        route , response = route_query(query)
+        if not route:
+            return response, []
+
         # Step 1: Rewrite the query if it's a follow-up question
         rewritten_query = rewrite_query_with_history(query, memory)
         print("Rewritten query:\n", rewritten_query)
