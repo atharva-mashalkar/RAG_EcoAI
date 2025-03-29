@@ -122,7 +122,9 @@ if __name__ == "__main__":
                 source = ""
                 for citation in session_message[2]:
                     source += f"\n- {citation.pdf_path}, Page {citation.page_number}"
-                ai_message = f"{session_message[1]}\n\nSource:{source}"
+                ai_message = f"{session_message[1]}"
+                if source:
+                    ai_message+=f"\n\nSource:{source}"
                 if session_message[3]:
                     st.session_state['session_data'][session_id]["ai_response"] = ai_message
                     st.chat_message("AI", avatar="./source/utils/logo.jpeg").write_stream(_stream_response)

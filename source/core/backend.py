@@ -19,19 +19,23 @@ def process_query(query):
     
     # Step 2: Retrieve relevant documents using the rewritten query
     retrieved_docs = retrieve_documents({"query": rewritten_query})
-    # print("Docs:\n", retrieved_docs)
-    # Step 3: Get the conversation chain with memory
+
+    # Step 3: If no docuemnts are retrieved ⁠⁠suggest a meeting with https://calendly.com/gregory-gueneau
+    if not retrieved_docs:
+        return "No relevant documents found. Please consider scheduling a meeting with https://calendly.com/gregory-gueneau for further assistance." , []
+
+    # Step 4: Get the conversation chain with memory
     conversation_chain = get_conversation_chain()
     
-    # Step 4: Process through the chain
+    # Step 5: Process through the chain
     result = conversation_chain.invoke(retrieved_docs)
-    
-    # Step 5: Save the original interaction to memory
+
+    # Step 6: Save the original interaction to memory
     memory.save_context(
         {"input": query},  # Save original query to maintain natural conversation flow
         {"output": result.answer}
     )
-    
+
     return result.answer, result.citations
 
 # ---------------------------
